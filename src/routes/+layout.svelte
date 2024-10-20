@@ -19,7 +19,7 @@
 			<svelte:fragment slot="trail">
 				<a
 					class="btn btn-sm variant-ghost-surface"
-					href=""
+					href="/"
 					target="_blank"
 					rel="noreferrer"
 				>
@@ -27,7 +27,7 @@
 				</a>
 				<a
 					class="btn btn-sm variant-ghost-surface"
-					href=""
+					href="/"
 					target="_blank"
 					rel="noreferrer"
 				>
@@ -35,7 +35,7 @@
 				</a>
 				<a
 					class="btn btn-sm variant-ghost-surface"
-					href=""
+					href="/"
 					target="_blank"
 					rel="noreferrer"
 				>
