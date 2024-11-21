@@ -1,0 +1,171 @@
+// src/routes/qanda/+page.svelte
+<script lang="ts">
+	import { Modal, Toast } from '@skeletonlabs/skeleton';
+	import { writable } from 'svelte/store';
+
+	// State management
+	const showQuestionModal = writable(false);
+	
+	// Form data
+	let questionData = {
+		title: '',
+		details: '',
+		selectedCategories: new Set()
+	};
+
+	// Sample data
+	const categories = [
+		'Essay Structure',
+		'Common App',
+		'Personal Statement',
+		'Supplemental Essays',
+		'Writing Tips'
+	];
+
+	const qaCards = [
+		{
+			title: 'How long should my personal statement be?',
+			content: 'The Common App essay should be between 250-650 words. Most successful essays are usually closer to the 650-word limit, as this gives you enough space to develop your story...',
+			expert: 'Sarah Miller',
+			role: 'Admissions Officer'
+		},
+		{
+			title: 'Should I write about COVID-19 in my essay?',
+			content: 'While COVID-19 has affected everyone, make sure your essay brings a unique perspective. Focus on specific experiences and personal growth rather than general impacts...',
+			expert: 'John Davis',
+			role: 'Writing Coach'
+		},
+		{
+			title: 'How do I choose a topic for my essay?',
+			content: 'Choose a topic that reveals something meaningful about you. The best essays often come from everyday experiences that showcase your character, values, and personal growth...',
+			expert: 'Emily Wong',
+			role: 'College Counselor'
+		},
+		{
+			title: 'What are common essay mistakes to avoid?',
+			content: 'Common mistakes include being too generic, trying to impress with vocabulary, not proofreading thoroughly, and failing to show rather than tell. Focus on authenticity...',
+			expert: 'Mark Thompson',
+			role: 'Writing Expert'
+		}
+	];
+
+	function toggleCategory(category: string) {
+		if (questionData.selectedCategories.has(category)) {
+			questionData.selectedCategories.delete(category);
+		} else {
+			questionData.selectedCategories.add(category);
+		}
+		questionData = {...questionData};
+	}
+
+	function handleSubmit() {
+		console.log('Question submitted:', questionData);
+		$showQuestionModal = false;
+		questionData = {
+			title: '',
+			details: '',
+			selectedCategories: new Set()
+		};
+		Toast.trigger({
+			message: 'Your question has been submitted successfully! Our experts will respond within 24 hours.',
+			background: 'variant-filled-success'
+		});
+	}
+</script>
+
+<!-- Header Section -->
+<div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white py-16 text-center">
+	<h1 class="h1 mb-4">Questions & Answers</h1>
+	<p class="text-lg">Get insights from admissions officers and writing experts</p>
+</div>
+
+<!-- Search Bar -->
+<div class="container mx-auto px-4 -mt-6 relative z-10 max-w-2xl">
+	<input 
+		class="input" 
+		type="search" 
+		placeholder="Search questions..."
+		enhanced
+	>
+</div>
+
+<!-- Categories -->
+<div class="container mx-auto px-4 py-8 flex flex-wrap justify-center gap-4">
+	<button class="chip variant-filled">All Questions</button>
+	{#each categories as category}
+		<button class="chip variant-soft">{category}</button>
+	{/each}
+</div>
+
+<!-- Q&A Grid -->
+<div class="container mx-auto px-4 py-8">
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+		{#each qaCards as card}
+			<div class="card p-4">
+				<h3 class="h3 text-primary-500 mb-4">{card.title}</h3>
+				<p class="mb-4">{card.content}</p>
+				<div class="flex items-center gap-2 text-sm opacity-75">
+					<i class="fas fa-user" />
+					<span>Answered by {card.expert}, {card.role}</span>
+				</div>
+			</div>
+		{/each}
+	</div>
+</div>
+
+<!-- Ask Question Button -->
+<button
+	class="btn-icon variant-filled-primary fixed bottom-8 right-8 w-16 h-16 rounded-full"
+	on:click={() => $showQuestionModal = true}
+>
+	<i class="fas fa-plus text-2xl" />
+</button>
+
+<!-- Question Modal -->
+<Modal bind:open={$showQuestionModal} backdropClasses="bg-surface-backdrop-token">
+	<div class="modal-header">
+		<h2 class="h2">Ask a Question</h2>
+		<p class="opacity-75">Our experts will answer your question within 24 hours</p>
+	</div>
+	
+	<form on:submit|preventDefault={handleSubmit} class="space-y-4">
+		<label class="label">
+			<span>Question Title</span>
+			<input
+				type="text"
+				class="input"
+				bind:value={questionData.title}
+				placeholder="e.g., How do I make my essay stand out?"
+				required
+			/>
+		</label>
+
+		<label class="label">
+			<span>Category</span>
+			<div class="flex flex-wrap gap-2 mt-2">
+				{#each categories as category}
+					<button
+						type="button"
+						class="chip {questionData.selectedCategories.has(category) ? 'variant-filled' : 'variant-soft'}"
+						on:click={() => toggleCategory(category)}
+					>
+						{category}
+					</button>
+				{/each}
+			</div>
+		</label>
+
+		<label class="label">
+			<span>Question Details</span>
+			<textarea
+				class="textarea"
+				bind:value={questionData.details}
+				placeholder="Provide more context about your question..."
+				rows="4"
+				required
+			></textarea>
+		</label>
+
+		<button type="submit" class="btn variant-filled-primary w-full">Submit Question</button>
+	</form>
+</Modal>

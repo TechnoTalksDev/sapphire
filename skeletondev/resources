@@ -1,0 +1,193 @@
+// routes/+layout.svelte
+<script lang="ts">
+  import '@skeletonlabs/skeleton/themes/theme-modern.css';
+  import '@skeletonlabs/skeleton/styles/skeleton.css';
+  import '../app.postcss';
+  import { AppShell, AppBar, LightSwitch } from '@skeletonlabs/skeleton';
+</script>
+
+<AppShell>
+  <svelte:fragment slot="header">
+    <AppBar>
+      <svelte:fragment slot="lead">
+        <strong class="text-xl uppercase">Tidal Wave</strong>
+      </svelte:fragment>
+      <svelte:fragment slot="trail">
+        <a href="/" class="btn btn-sm variant-ghost">Home</a>
+        <a href="/essay" class="btn btn-sm variant-ghost">Submit Essay</a>
+        <a href="/resources" class="btn btn-sm variant-ghost">Resources</a>
+        <a href="/qanda" class="btn btn-sm variant-ghost">Q&A</a>
+        <a href="/login" class="btn btn-sm variant-ghost">Login</a>
+        <LightSwitch />
+      </svelte:fragment>
+    </AppBar>
+  </svelte:fragment>
+  <slot />
+</AppShell>
+
+// routes/resources/+page.svelte
+<script lang="ts">
+  import { Search } from 'lucide-svelte';
+  import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+  
+  const categories = [
+    { icon: 'star', label: 'Featured Resources' },
+    { icon: 'book', label: 'Sample Essays' },
+    { icon: 'lightbulb', label: 'Writing Tips' },
+    { icon: 'graduation-cap', label: 'Admissions Advice' },
+    { icon: 'check-circle', label: 'Grammar Guide' },
+    { icon: 'chart-line', label: 'Success Stories' }
+  ];
+</script>
+
+<div class="container mx-auto p-4 gap-4 lg:grid lg:grid-cols-[250px_1fr]">
+  <!-- Sidebar -->
+  <div class="hidden lg:block space-y-4">
+    <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+      <div class="input-group-shim"><Search size={16} /></div>
+      <input type="search" placeholder="Search resources..." />
+    </div>
+
+    <ListBox>
+      {#each categories as category}
+        <ListBoxItem>
+          <span><i class="fas fa-{category.icon}"></i> {category.label}</span>
+        </ListBoxItem>
+      {/each}
+    </ListBox>
+  </div>
+
+  <!-- Main Content -->
+  <div class="space-y-4">
+    <!-- Featured Essays Section -->
+    <div class="card variant-glass-primary p-4">
+      <h2 class="h2 mb-4">Featured College Essays That Worked</h2>
+      <p class="mb-4">Learn from successful essays that helped students get into top schools</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {#each ['Harvard', 'Stanford', 'MIT'] as school, i}
+          <div class="card variant-glass p-4">
+            <span class="badge variant-filled">{school}</span>
+            <h3 class="h3 mt-2">
+              {#if i === 0}
+                Overcoming Adversity
+              {:else if i === 1}
+                Community Impact
+              {:else}
+                Innovation Journey
+              {/if}
+            </h3>
+            <p class="opacity-75">
+              {#if i === 0}
+                A personal narrative about resilience and growth...
+              {:else if i === 1}
+                How a local initiative sparked global change...
+              {:else}
+                From curiosity to breakthrough invention...
+              {/if}
+            </p>
+          </div>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Expert Tips Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="card p-4 variant-soft">
+        <h3 class="h3">Crafting Your Personal Statement</h3>
+        <p class="my-2">Learn the essential elements of a compelling personal statement and how to make yours stand out.</p>
+        <div class="flex gap-2 flex-wrap">
+          <span class="badge variant-soft">Writing Tips</span>
+          <span class="badge variant-soft">Personal Statement</span>
+        </div>
+        <div class="flex gap-4 mt-4 opacity-75">
+          <span class="flex items-center gap-1">
+            <i class="far fa-clock"></i> 15 min read
+          </span>
+          <span class="flex items-center gap-1">
+            <i class="far fa-eye"></i> 2.4k views
+          </span>
+        </div>
+      </div>
+
+      <div class="card p-4 variant-soft">
+        <h3 class="h3">Common Application Essay Guide</h3>
+        <p class="my-2">A comprehensive guide to tackling each prompt on the Common Application with examples.</p>
+        <div class="flex gap-2 flex-wrap">
+          <span class="badge variant-soft">Common App</span>
+          <span class="badge variant-soft">Essay Guide</span>
+        </div>
+        <div class="flex gap-4 mt-4 opacity-75">
+          <span class="flex items-center gap-1">
+            <i class="far fa-clock"></i> 20 min read
+          </span>
+          <span class="flex items-center gap-1">
+            <i class="far fa-eye"></i> 3.1k views
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource Cards -->
+    <div class="card p-4 variant-soft">
+      <div class="flex justify-between items-start mb-4">
+        <h3 class="h3">Writing Workshop: Show, Don't Tell</h3>
+        <span class="badge variant-filled">Video Tutorial</span>
+      </div>
+      <p>Master the art of descriptive writing with practical exercises and examples.</p>
+      <div class="flex gap-2 flex-wrap my-4">
+        <span class="badge variant-soft">Writing Skills</span>
+        <span class="badge variant-soft">Tutorial</span>
+        <span class="badge variant-soft">Advanced</span>
+      </div>
+      <div class="flex gap-4 opacity-75">
+        <span class="flex items-center gap-1">
+          <i class="far fa-clock"></i> 45 min
+        </span>
+        <span class="flex items-center gap-1">
+          <i class="far fa-eye"></i> 1.8k views
+        </span>
+        <span class="flex items-center gap-1">
+          <i class="far fa-star"></i> 4.9/5
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="container mx-auto p-4 text-center mt-8">
+  <p>&copy; 2024 Tidal Wave. All rights reserved.</p>
+  <div class="flex justify-center gap-4 mt-2">
+    <a href="#" class="anchor">About</a>
+    <a href="#" class="anchor">Privacy Policy</a>
+    <a href="#" class="anchor">Terms of Service</a>
+    <a href="#" class="anchor">Contact</a>
+  </div>
+</footer>
+
+// app.postcss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// tailwind.config.ts
+import { join } from 'path';
+import type { Config } from 'tailwindcss';
+import { skeleton } from '@skeletonlabs/tw-plugin';
+
+export default {
+  darkMode: 'class',
+  content: [
+    './src/**/*.{html,js,svelte,ts}',
+    join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    skeleton({
+      themes: { preset: ['modern'] }
+    })
+  ]
+} satisfies Config;
