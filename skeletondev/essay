@@ -1,220 +1,267 @@
-<!-- routes/essay/+page.svelte -->
+// src/routes/+layout.svelte
 <script lang="ts">
-  import { AppBar, AppShell, LightSwitch } from '@skeletonlabs/skeleton';
-  import { RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
-  import { Checkbox } from '@skeletonlabs/skeleton';
-  import { FileDropzone } from '@skeletonlabs/skeleton';
-  import { ProgressBar } from '@skeletonlabs/skeleton';
-  import { Toast } from '@skeletonlabs/skeleton';
-  import { getToastStore } from '@skeletonlabs/skeleton';
-  import { onMount } from 'svelte';
-
-  const toastStore = getToastStore();
-
-  let selectedMethod = 'upload';
-  let uploadProgress = 0;
-  let file: File | null = null;
-  let editorContent = '';
-  let tinyMCE: any;
-
-  // Form data
-  let formData = {
-    title: '',
-    essayType: 'college',
-    reviewPreferences: {
-      grammar: true,
-      content: true,
-      plagiarism: true,
-      peer: false,
-      expert: false
-    },
-    notes: ''
-  };
-
-  onMount(async () => {
-    // Initialize TinyMCE
-    const tinymce = await import('tinymce');
-    await tinymce.default.init({
-      selector: '#editor',
-      height: 500,
-      menubar: false,
-      plugins: [
-        'advlist', 'autolink', 'lists', 'link', 'charmap', 'preview',
-        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-      ],
-      toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
-    });
-  });
-
-  function handleMethodSelect(method: string) {
-    selectedMethod = method;
-  }
-
-  function handleFileUpload(event: CustomEvent) {
-    file = event.detail.files[0];
-    simulateUpload();
-  }
-
-  function simulateUpload() {
-    let progress = 0;
-    const interval = setInterval(() => {
-      if (progress >= 100) {
-        clearInterval(interval);
-        toastStore.trigger({
-          message: 'File uploaded successfully!',
-          background: 'variant-filled-success'
-        });
-      } else {
-        progress += 5;
-        uploadProgress = progress;
-      }
-    }, 50);
-  }
-
-  async function handleSubmit() {
-    // Simulate form submission
-    toastStore.trigger({
-      message: 'Submitting essay...',
-      background: 'variant-filled-primary'
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    toastStore.trigger({
-      message: 'Essay submitted successfully! You\'ll receive feedback notifications via email.',
-      background: 'variant-filled-success'
-    });
-  }
+  import '@skeletonlabs/skeleton/themes/theme-modern.css';
+  import '@skeletonlabs/skeleton/styles/skeleton.css';
+  import '../app.postcss';
+  import { AppShell, AppBar, Avatar, LightSwitch } from '@skeletonlabs/skeleton';
 </script>
 
 <AppShell>
   <svelte:fragment slot="header">
     <AppBar>
       <svelte:fragment slot="lead">
-        <a href="/" class="h4 text-primary-500 font-bold">Tidal Wave</a>
+        <a href="/" class="h2 text-primary-500">Tidal Wave</a>
       </svelte:fragment>
       <svelte:fragment slot="trail">
-        <nav class="hidden md:flex space-x-8">
-          <a href="/" class="hover:text-primary-500 transition-colors">Home</a>
-          <a href="/essay" class="hover:text-primary-500 transition-colors">Submit Essay</a>
-          <a href="/resources" class="hover:text-primary-500 transition-colors">Resources</a>
-          <a href="/qanda" class="hover:text-primary-500 transition-colors">Q&A</a>
-          <a href="/login" class="hover:text-primary-500 transition-colors">Login</a>
-        </nav>
+        <div class="hidden md:flex gap-4">
+          <a href="/" class="anchor">Home</a>
+          <a href="/essay" class="anchor">Submit Essay</a>
+          <a href="/resources" class="anchor">Resources</a>
+          <a href="/qanda" class="anchor">Q&A</a>
+          <a href="/login" class="anchor">Login</a>
+        </div>
         <LightSwitch />
       </svelte:fragment>
     </AppBar>
   </svelte:fragment>
-
-  <div class="container mx-auto p-4 space-y-8">
-    <div class="card p-8">
-      <h2 class="h2 mb-4">Submit Your Essay</h2>
-      <p class="mb-8">Get feedback from peers and mentors to improve your writing</p>
-
-      <form on:submit|preventDefault={handleSubmit} class="space-y-6">
-        <!-- Essay Title -->
-        <label class="label">
-          <span>Essay Title</span>
-          <input 
-            class="input" 
-            type="text" 
-            bind:value={formData.title} 
-            required 
-          />
-        </label>
-
-        <!-- Essay Type -->
-        <div class="space-y-2">
-          <span class="label">Essay Type</span>
-          <RadioGroup>
-            <RadioItem bind:group={formData.essayType} name="essay-type" value="college">College Application</RadioItem>
-            <RadioItem bind:group={formData.essayType} name="essay-type" value="scholarship">Scholarship</RadioItem>
-            <RadioItem bind:group={formData.essayType} name="essay-type" value="academic">Academic</RadioItem>
-          </RadioGroup>
-        </div>
-
-        <!-- Upload Method -->
-        <div class="space-y-2">
-          <span class="label">Upload Method</span>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {#each ['upload', 'paste', 'write'] as method}
-              <button 
-                type="button"
-                class="card p-4 text-center {selectedMethod === method ? 'variant-filled-primary' : 'variant-soft'}"
-                on:click={() => handleMethodSelect(method)}
-              >
-                <i class="fas fa-{method === 'upload' ? 'upload' : method === 'paste' ? 'paste' : 'pencil-alt'} text-2xl mb-2"></i>
-                <h4 class="h4">{method === 'upload' ? 'Upload Document' : method === 'paste' ? 'Paste Text' : 'Write Online'}</h4>
-                <p class="text-sm">
-                  {method === 'upload' ? 'Upload your essay as a document' : 
-                    method === 'paste' ? 'Copy and paste your essay text' : 'Use our online editor'}
-                </p>
-              </button>
-            {/each}
-          </div>
-        </div>
-
-        <!-- Upload Section -->
-        {#if selectedMethod === 'upload'}
-          <div class="space-y-4">
-            <FileDropzone name="files" on:change={handleFileUpload}>
-              <i class="fas fa-cloud-upload-alt text-4xl mb-2"></i>
-              <p>Drag and drop your file here or click to browse</p>
-            </FileDropzone>
-            <ProgressBar value={uploadProgress} />
-          </div>
-        {/if}
-
-        <!-- Editor Section -->
-        {#if selectedMethod === 'write' || selectedMethod === 'paste'}
-          <div class="space-y-2">
-            <textarea id="editor" bind:value={editorContent}></textarea>
-          </div>
-        {/if}
-
-        <!-- Review Preferences -->
-        <div class="space-y-2">
-          <span class="label">Review Preferences</span>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <Checkbox bind:checked={formData.reviewPreferences.grammar}>Grammar & Style</Checkbox>
-            <Checkbox bind:checked={formData.reviewPreferences.content}>Content & Structure</Checkbox>
-            <Checkbox bind:checked={formData.reviewPreferences.plagiarism}>Plagiarism Check</Checkbox>
-            <Checkbox bind:checked={formData.reviewPreferences.peer}>Peer Review</Checkbox>
-            <Checkbox bind:checked={formData.reviewPreferences.expert}>Expert Review</Checkbox>
-          </div>
-        </div>
-
-        <!-- Additional Notes -->
-        <label class="label">
-          <span>Additional Notes (optional)</span>
-          <textarea 
-            class="textarea" 
-            rows="3" 
-            bind:value={formData.notes}
-            placeholder="Any specific areas you'd like reviewers to focus on?"
-          ></textarea>
-        </label>
-
-        <!-- Submit Buttons -->
-        <div class="flex gap-4">
-          <button type="submit" class="btn variant-filled-primary">Submit Essay</button>
-          <button type="button" class="btn variant-soft">Save Draft</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <svelte:fragment slot="footer">
-    <footer class="p-8 text-center">
-      <p class="mb-4">&copy; 2024 Tidal Wave. All rights reserved.</p>
-      <div class="flex justify-center gap-8">
-        <a href="#" class="anchor">About</a>
-        <a href="#" class="anchor">Privacy Policy</a>
-        <a href="#" class="anchor">Terms of Service</a>
-        <a href="#" class="anchor">Contact</a>
-      </div>
-    </footer>
-  </svelte:fragment>
+  <slot />
 </AppShell>
+
+// src/routes/essay/+page.svelte
+<script lang="ts">
+  import { FileDropzone, ProgressBar, RadioGroup, Radio, Checkbox } from '@skeletonlabs/skeleton';
+  import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+  import { Editor } from '@tinymce/tinymce-svelte';
+
+  let reviewType = 'peers';
+  let uploadMethod = 'upload';
+  let files: FileList;
+  let uploadProgress = 0;
+  let editorContent = '';
+  
+  const reviewOptions = {
+    peers: [
+      { id: 'grammar', label: 'Grammar & Style', checked: true },
+      { id: 'content', label: 'Content & Structure', checked: true },
+      { id: 'plagiarism', label: 'Plagiarism Check', checked: true },
+      { id: 'peer', label: 'Peer Review', checked: false },
+      { id: 'expert', label: 'Expert Review', checked: false }
+    ],
+    ai: [
+      { id: 'aiPlagiarism', label: 'Plagiarism Check', checked: true },
+      { id: 'aiStyle', label: 'Style Suggestions', checked: true },
+      { id: 'aiGrammar', label: 'Grammar Check', checked: true },
+      { id: 'aiContent', label: 'Content Enhancement', checked: true }
+    ]
+  };
+
+  function handleUpload(e: CustomEvent) {
+    files = e.detail;
+    simulateUpload();
+  }
+
+  function simulateUpload() {
+    const interval = setInterval(() => {
+      uploadProgress += 5;
+      if (uploadProgress >= 100) {
+        clearInterval(interval);
+        const t: ToastSettings = {
+          message: 'File uploaded successfully!',
+          background: 'variant-filled-success'
+        };
+        toastStore.trigger(t);
+      }
+    }, 50);
+  }
+
+  async function handleSubmit() {
+    const t: ToastSettings = {
+      message: `Essay submitted successfully! ${
+        reviewType === 'ai' 
+          ? 'AI review will be ready in a few minutes.' 
+          : "You'll receive feedback notifications via email."
+      }`,
+      background: 'variant-filled-success'
+    };
+    toastStore.trigger(t);
+  }
+</script>
+
+<div class="container mx-auto p-4 space-y-8">
+  <div class="card p-4 space-y-4">
+    <h2 class="h2">Submit Your Essay</h2>
+    <p>Get feedback to improve your writing</p>
+
+    <form on:submit|preventDefault={handleSubmit} class="space-y-8">
+      <!-- Review Type Selection -->
+      <div class="space-y-2">
+        <label class="label">Choose Review Type</label>
+        <RadioGroup>
+          <Radio name="reviewType" bind:group={reviewType} value="peers">
+            <div class="flex gap-2 items-center">
+              <i class="fas fa-users"></i>
+              <div>
+                <h4 class="h4">Peer & Mentor Review</h4>
+                <p class="text-sm">Get feedback from experienced peers and mentors</p>
+              </div>
+            </div>
+          </Radio>
+          <Radio name="reviewType" bind:group={reviewType} value="ai">
+            <div class="flex gap-2 items-center">
+              <i class="fas fa-robot"></i>
+              <div>
+                <h4 class="h4">AI Review</h4>
+                <p class="text-sm">Get instant AI-powered feedback and suggestions</p>
+              </div>
+            </div>
+          </Radio>
+        </RadioGroup>
+      </div>
+
+      <!-- Upload Method Selection -->
+      <div class="space-y-2">
+        <label class="label">Upload Method</label>
+        <RadioGroup>
+          <Radio name="uploadMethod" bind:group={uploadMethod} value="upload">
+            <div class="flex gap-2 items-center">
+              <i class="fas fa-upload"></i>
+              <div>
+                <h4 class="h4">Upload Document</h4>
+                <p class="text-sm">Upload your essay as a document</p>
+              </div>
+            </div>
+          </Radio>
+          <Radio name="uploadMethod" bind:group={uploadMethod} value="paste">
+            <div class="flex gap-2 items-center">
+              <i class="fas fa-paste"></i>
+              <div>
+                <h4 class="h4">Paste Text</h4>
+                <p class="text-sm">Copy and paste your essay text</p>
+              </div>
+            </div>
+          </Radio>
+          <Radio name="uploadMethod" bind:group={uploadMethod} value="write">
+            <div class="flex gap-2 items-center">
+              <i class="fas fa-pencil-alt"></i>
+              <div>
+                <h4 class="h4">Write Online</h4>
+                <p class="text-sm">Use our online editor</p>
+              </div>
+            </div>
+          </Radio>
+        </RadioGroup>
+      </div>
+
+      <!-- Upload Section -->
+      {#if uploadMethod === 'upload'}
+        <div class="space-y-2">
+          <FileDropzone on:change={handleUpload} accept=".doc,.docx,.pdf,.txt" />
+          {#if uploadProgress > 0}
+            <ProgressBar value={uploadProgress} max={100} />
+          {/if}
+        </div>
+      {:else}
+        <div class="space-y-2">
+          <Editor
+            apiKey="your-tinymce-api-key"
+            bind:value={editorContent}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+              ],
+              toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+            }}
+          />
+        </div>
+      {/if}
+
+      <!-- Review Preferences -->
+      <div class="space-y-2">
+        <label class="label">Review Preferences</label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {#if reviewType === 'peers'}
+            {#each reviewOptions.peers as option}
+              <Checkbox bind:checked={option.checked}>{option.label}</Checkbox>
+            {/each}
+          {:else}
+            {#each reviewOptions.ai as option}
+              <Checkbox bind:checked={option.checked}>{option.label}</Checkbox>
+            {/each}
+          {/if}
+        </div>
+      </div>
+
+      <!-- Additional Notes -->
+      <div class="space-y-2">
+        <label class="label" for="notes">Additional Notes (optional)</label>
+        <textarea
+          id="notes"
+          class="textarea"
+          rows="3"
+          placeholder="Any specific areas you'd like reviewers to focus on?"
+        />
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="flex gap-4">
+        <button type="submit" class="btn variant-filled-primary">Submit Essay</button>
+        <button type="button" class="btn variant-soft-surface">Save Draft</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+// src/app.postcss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// src/app.d.ts
+declare global {
+  namespace App {
+    interface Locals {}
+    interface PageData {}
+    interface Error {}
+    interface Platform {}
+  }
+}
+
+export {};
+
+// src/routes/+layout.ts
+export const prerender = true;
+export const ssr = false;
+
+// tailwind.config.ts
+import { join } from 'path';
+import type { Config } from 'tailwindcss';
+import { skeleton } from '@skeletonlabs/skeleton/tailwind/skeleton.cjs';
+
+export default {
+  darkMode: 'class',
+  content: [
+    './src/**/*.{html,js,svelte,ts}',
+    join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [...skeleton()]
+} satisfies Config;
+
+// package.json dependencies to add:
+{
+  "dependencies": {
+    "@skeletonlabs/skeleton": "^2.5.0",
+    "@sveltejs/adapter-auto": "^2.0.0",
+    "@sveltejs/kit": "^1.27.4",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tinymce/tinymce-svelte": "^1.0.1",
+    "svelte": "^4.0.5",
+    "tailwindcss": "^3.3.5"
+  }
+}

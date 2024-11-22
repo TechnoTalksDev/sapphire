@@ -226,13 +226,6 @@
             opacity: 0.7;
         }
 
-        footer {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 4rem;
-        }
-
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -241,6 +234,40 @@
             .review-options {
                 grid-template-columns: 1fr;
             }
+        }
+        
+        .review-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+        }
+
+        .review-type-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .review-type-option:hover {
+            transform: translateY(-2px);
+        }
+
+        .review-type-option.selected {
+            border-color: var(--primary);
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+
+        .review-type-option i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
         }
     </style>
 </head>
@@ -262,29 +289,22 @@
     <div class="container">
         <div class="submission-form">
             <h2>Submit Your Essay</h2>
-            <p>Get feedback from peers and mentors to improve your writing</p>
+            <p>Get feedback to improve your writing</p>
             
             <form id="essayForm">
                 <div class="form-group">
-                    <label for="essayTitle">Essay Title</label>
-                    <input type="text" id="essayTitle" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Essay Type</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-item">
-                            <input type="radio" name="essayType" value="college" checked>
-                            College Application
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="radio" name="essayType" value="scholarship">
-                            Scholarship
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="radio" name="essayType" value="academic">
-                            Academic
-                        </label>
+                    <label>Choose Review Type</label>
+                    <div class="review-type-selector">
+                        <div class="review-type-option selected" data-type="peers">
+                            <i class="fas fa-users"></i>
+                            <h4>Peer & Mentor Review</h4>
+                            <p>Get feedback from experienced peers and mentors</p>
+                        </div>
+                        <div class="review-type-option" data-type="ai">
+                            <i class="fas fa-robot"></i>
+                            <h4>AI Review</h4>
+                            <p>Get instant AI-powered feedback and suggestions</p>
+                        </div>
                     </div>
                 </div>
 
@@ -324,9 +344,9 @@
                     <textarea id="editor"></textarea>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="reviewPreferences">
                     <label>Review Preferences</label>
-                    <div class="checkbox-group">
+                    <div class="checkbox-group" id="peerReviewOptions">
                         <label class="checkbox-item">
                             <input type="checkbox" checked> Grammar & Style
                         </label>
@@ -343,6 +363,20 @@
                             <input type="checkbox"> Expert Review
                         </label>
                     </div>
+                    <div class="checkbox-group" id="aiReviewOptions" style="display: none;">
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> Plagiarism Check
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> Style Suggestions
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> Grammar Check
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> Content Enhancement
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -357,16 +391,6 @@
             </form>
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2024 Tidal Wave. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="#">About</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact</a>
-        </div>
-    </footer>
 
     <script>
         // Theme toggle
@@ -470,21 +494,39 @@
                 }
             }, 50);
         }
+        
+        document.querySelectorAll('.review-type-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.review-type-option').forEach(opt => 
+                    opt.classList.remove('selected'));
+                this.classList.add('selected');
+     
+                const reviewType = this.dataset.type;
+                const peerReviewOptions = document.getElementById('peerReviewOptions');
+                const aiReviewOptions = document.getElementById('aiReviewOptions');
+                
+                if (reviewType === 'ai') {
+                    peerReviewOptions.style.display = 'none';
+                    aiReviewOptions.style.display = 'flex';
+                } else {
+                    peerReviewOptions.style.display = 'flex';
+                    aiReviewOptions.style.display = 'none';
+                }
+            });
+        });
 
-        // Form submission
         const form = document.getElementById('essayForm');
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            
-            // Show loading state
+
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerText;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             submitBtn.disabled = true;
 
-            // Simulate form submission
+            const isAiReview = document.querySelector('.review-type-option[data-type="ai"]').classList.contains('selected');
+
             setTimeout(() => {
-                // Show success message
                 const successMessage = document.createElement('div');
                 successMessage.style.backgroundColor = 'var(--success)';
                 successMessage.style.color = 'white';
@@ -493,15 +535,15 @@
                 successMessage.style.marginTop = '1rem';
                 successMessage.innerHTML = `
                     <i class="fas fa-check-circle"></i>
-                    Essay submitted successfully! You'll receive feedback notifications via email.
+                    Essay submitted successfully! ${isAiReview ? 
+                        'AI review will be ready in a few minutes.' : 
+                        "You'll receive feedback notifications via email."}
                 `;
                 form.appendChild(successMessage);
 
-                // Reset button state
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
 
-                // Scroll to success message
                 successMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 2000);
         });
