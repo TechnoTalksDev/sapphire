@@ -1,8 +1,13 @@
-<script>
+<script lang="ts">
 	import '../app.css';
-	let { children } = $props();
+	let { data, children }: { data: LayoutData, children: Snippet } = $props();
+	import { AppBar, AppShell, Avatar } from '@skeletonlabs/skeleton';
 
-	import { AppBar, AppShell } from '@skeletonlabs/skeleton';
+	import type { LayoutData, LayoutServerData } from './$types';
+	import type { Snippet } from 'svelte';
+	import { enhance } from '$app/forms';
+
+
 </script>
 
 
@@ -11,13 +16,21 @@
 		<!-- App Bar -->
 	</svelte:fragment>
 	<nav>
-		<a href="/" class="logo">Tidal Wave</a>
+		<a href="/" class="logo">Sapphire</a>
 		<div class="nav-links">
 				<a href="/">Home</a>
 				<a href="/essay">Submit Essay</a>
 				<a href="/resources">Resources</a>
 				<a href="/help">Q&A</a>
-				<a href="/demo/lucia/login">Login</a>
+				{#if data.user}
+
+					<button><Avatar initials="{data.user.username}" background="bg-slate-200 h-6 w-6" /></button>
+
+				<p class="ml-[-1rem]">63</p>
+				<img src="/sapphire2.jpg" class="h-6 w-6 ml-[-2rem]"/>
+				{:else}
+					<a href="/demo/lucia/login">Login</a>
+				{/if}
 		</div>
 </nav>
 

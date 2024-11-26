@@ -25,7 +25,7 @@
 <p style="color: red">{form?.message ?? ''}</p>
 </div>
 -->
-
+<div class="w-screen h-screen flex flex-row justify-center items-center">
 <div class="login-container">
   <div class="login-card">
       <div class="auth-tabs">
@@ -59,7 +59,7 @@
 
   </div>
 </div>
-
+</div>
 <style>
         :root {
             --primary: #4A90E2;
