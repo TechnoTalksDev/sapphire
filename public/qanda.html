@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Diamond - Q&A Forum</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #D92121;
+            --primary-black: #1A1A1A;
+            --primary-silver: #C0C0C0;
+            --primary-gold: #FFD700;
+            --text-light: #FFFFFF;
+            --text-dark: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-black);
+            color: var(--text-light);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(26, 26, 26, 0.95);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-red);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary-red);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-red);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            background-color: transparent;
+            border: 2px solid var(--primary-red);
+            color: var(--text-light);
+        }
+
+        .btn-signup {
+            background-color: var(--primary-red);
+            color: var(--text-light);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(217, 33, 33, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Q&A Header */
+        .qna-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .qna-header h1 {
+            color: var(--primary-gold);
+            font-size: 2.5rem;
+        }
+
+        /* Search and Filter Bar */
+        .search-filter {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-silver);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+        }
+
+        /* Question Cards */
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-red);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .question-title {
+            color: var(--primary-silver);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--primary-silver);
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .question-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(217, 33, 33, 0.1);
+            color: var(--primary-red);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Answer Section */
+        .answer-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(192, 192, 192, 0.1);
+        }
+
+        .answer-count {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .answer {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .answer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--primary-silver);
+        }
+
+        .answer-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .vote-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .vote-btn {
+            background: none;
+            border: none;
+            color: var(--primary-silver);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .vote-btn:hover {
+            color: var(--primary-red);
+        }
+
+        .vote-btn.voted {
+            color: var(--primary-red);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--primary-black);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid var(--primary-red);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--primary-silver);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-silver);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(192, 192, 192, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .tag-input {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            padding: 0.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .filter-buttons {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Red<span>Diamond</span></a>
+            <div class="nav-links">
+                <a href="essays.html">Essays</a>
+                <a href="ai.html">AI Review</a>
+                <a href="resources.html">Resources</a>
+                <a href="qanda.html">Q&A</a>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-login">Login</a>
+                <a href="login.html" class="btn btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Q&A Header -->
+        <div class="qna-header">
+            <h1>Q&A Forum</h1>
+            <button class="btn btn-signup" id="ask-question-btn">
+                <i class="fas fa-plus"></i> Ask Question
+            </button>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search questions...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Recent</button>
+                <button class="filter-btn">Most Answered</button>
+                <button class="filter-btn">Unanswered</button>
+                <button class="filter-btn">My Questions</button>
+            </div>
+        </div>
+
+        <!-- Question List -->
+        <div class="question-list">
+            <!-- Sample Question Card -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div>
+                        <h3 class="question-title">How do I structure a comparative essay effectively?</h3>
+                        <div class="question-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-user"></i>
+                                John Doe
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                2 hours ago
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-comment"></i>
+                                5 answers
+                            </span>
+                        </div>
+                    </div>
+                    <div class="question-votes">
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <span>12</span>
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <p>I'm trying to write a comparative essay between two novels, but I'm struggling with how to organize my thoughts and arguments effectively. Any tips or templates would be helpful!</p>
+                <div class="question-tags">
+                    <span class="tag">Essay Structure</span>
+                    <span class="tag">Comparative Analysis</span>
+                    <span class="tag">Writing Tips</span>
+                </div>
+
+                <!-- Answer Section -->
+                <div class="answer-section">
+                    <h4 class="answer-count">5 Answers</h4>
+                    <div class="answer">
+                        <div class="answer-meta">
+                            <span>Sarah Smith • 1 hour ago</span>
+                            <div class="answer-actions">
+                                <div class="vote-buttons">
+                                    <button class="vote-btn voted">
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <span>8</span>
+                                    <button class="vote-btn">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <p>The best way to structure a comparative essay is to use either the point-by-point method or the block method. Here's a quick breakdown...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Question Cards -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div>
+                        <h3 class="question-title">Tips for writing a strong thesis statement?</h3>
+                        <div class="question-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-user"></i>
+                                Alice Johnson
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                5 hours ago
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-comment"></i>
+                                3 answers
+                            </span>
+                        </div>
+                    </div>
+                    <div class="question-votes">
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <span>7</span>
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <p>I'm having trouble creating a concise and effective thesis statement. What are some key elements I should include?</p>
+                <div class="question-tags">
+                    <span class="tag">Thesis</span>
+                    <span class="tag">Academic Writing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ask Question Modal -->
+    <div class="modal" id="question-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ask a Question</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="question-form">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" required placeholder="What's your question? Be specific.">
+                </div>
+                <div class="form-group">
+                    <label>Details</label>
+                    <textarea required placeholder="Provide more context and details about your question..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tags</label>
+                    <div class="tag-input" id="tag-input">
+                        <input type="text" placeholder="Add tags (press Enter)">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-signup">Post Question</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Answer Modal -->
+    <div class="modal" id="answer-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Your Answer</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="answer-form">
+                <div class="form-group">
+                    <label>Write your answer</label>
+                    <textarea required placeholder="Share your knowledge..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-signup">Post Answer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const askQuestionBtn = document.getElementById('ask-question-btn');
+        const questionModal = document.getElementById('question-modal');
+        const answerModal = document.getElementById('answer-modal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        const questionForm = document.getElementById('question-form');
+        const answerForm = document.getElementById('answer-form');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const searchInput = document.querySelector('.search-bar input');
+        const tagInput = document.getElementById('tag-input');
+
+        // Question data store
+        let questions = [
+            {
+                id: 1,
+                title: 'How do I structure a comparative essay effectively?',
+                author: 'John Doe',
+                timestamp: new Date(Date.now() - 7200000),
+                content: 'I\'m trying to write a comparative essay between two novels...',
+                votes: 12,
+                answers: 5,
+                tags: ['Essay Structure', 'Comparative Analysis', 'Writing Tips']
+            },
+            // Add more sample questions here
+        ];
+
+        // Modal Controls
+        askQuestionBtn.addEventListener('click', () => {
+            questionModal.style.display = 'flex';
+        });
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                questionModal.style.display = 'none';
+                answerModal.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === questionModal || e.target === answerModal) {
+                questionModal.style.display = 'none';
+                answerModal.style.display = 'none';
+            }
+        });
+
+        // Tag Input Functionality
+        let tags = [];
+
+        tagInput.querySelector('input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && this.value) {
+                e.preventDefault();
+                if (tags.length < 5) {
+                    addTag(this.value);
+                    this.value = '';
+                }
+            }
+        });
+
+        function addTag(text) {
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.innerHTML = `
+                ${text}
+                <button onclick="removeTag(this.parentElement)">&times;</button>
+            `;
+            tagInput.insertBefore(tag, tagInput.querySelector('input'));
+            tags.push(text);
+        }
+
+        function removeTag(tagElement) {
+            tags = tags.filter(tag => tag !== tagElement.textContent.trim());
+            tagElement.remove();
+        }
+
+        // Form Submissions
+        questionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                title: questionForm.querySelector('input[type="text"]').value,
+                content: questionForm.querySelector('textarea').value,
+                tags: tags,
+                author: 'Current User', // This would come from auth
+                timestamp: new Date(),
+                votes: 0,
+                answers: 0
+            };
+
+            // Show loading state
+            const submitBtn = questionForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+            try {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Add to questions array (this would be a server call)
+                questions.unshift(formData);
+                
+                // Close modal and reset form
+                questionModal.style.display = 'none';
+                questionForm.reset();
+                tags = [];
+                const existingTags = tagInput.querySelectorAll('.tag');
+                existingTags.forEach(tag => tag.remove());
+
+                // Refresh question list
+                renderQuestions(questions);
+
+            } catch (error) {
+                console.error('Error posting question:', error);
+                alert('Error posting question. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Post Question';
+            }
+        });
+
+        // Voting System
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.vote-btn')) {
+                const voteBtn = e.target.closest('.vote-btn');
+                const voteDisplay = voteBtn.parentElement.querySelector('span');
+                const currentVotes = parseInt(voteDisplay.textContent);
+                
+                if (!voteBtn.classList.contains('voted')) {
+                    voteDisplay.textContent = voteBtn.querySelector('.fa-chevron-up') ? currentVotes + 1 : currentVotes - 1;
+                    voteBtn.classList.add('voted');
+                }
+            }
+        });
+
+        // Filter functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const filter = button.textContent.toLowerCase();
+                filterQuestions(filter);
+            });
+        });
+
+        function filterQuestions(filter) {
+            let filteredQuestions = [...questions];
+
+            switch (filter) {
+                case 'recent':
+                    filteredQuestions.sort((a, b) => b.timestamp - a.timestamp);
+                    break;
+                case 'most answered':
+                    filteredQuestions.sort((a, b) => b.answers - a.answers);
+                    break;
+                case 'unanswered':
+                    filteredQuestions = filteredQuestions.filter(q => q.answers === 0);
+                    break;
+                case 'my questions':
+                    filteredQuestions = filteredQuestions.filter(q => q.author === 'Current User');
+                    break;
+            }
+
+            renderQuestions(filteredQuestions);
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredQuestions = questions.filter(q => 
+                q.title.toLowerCase().includes(searchTerm) || 
+                q.content.toLowerCase().includes(searchTerm) ||
+                q.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+            renderQuestions(filteredQuestions);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions(questions);
+        });
+    </script>
+</body>
+</html>
