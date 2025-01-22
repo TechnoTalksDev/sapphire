@@ -3,62 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tidal Wave - Writing Resources</title>
+    <title>Red Diamond - Writing Resources</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #4A90E2;
-            --secondary: #6C63FF;
-            --success: #2ECC71;
-            --background: #ffffff;
-            --text: #333333;
-            --card-bg: #f8f9fa;
-            --border: #e1e4e8;
-            --tag-bg: #e9ecef;
-        }
-
-        [data-theme="dark"] {
-            --primary: #6C63FF;
-            --secondary: #4A90E2;
-            --success: #2ECC71;
-            --background: #1a1a1a;
-            --text: #ffffff;
-            --card-bg: #2d2d2d;
-            --border: #404040;
-            --tag-bg: #404040;
+            --primary-red: #D92121;
+            --primary-black: #1A1A1A;
+            --primary-silver: #C0C0C0;
+            --primary-gold: #FFD700;
+            --text-light: #FFFFFF;
+            --text-dark: #333333;
+            --premium-gradient: linear-gradient(45deg, var(--primary-gold), #FFA500);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.6;
+            background-color: var(--primary-black);
+            color: var(--text-light);
         }
 
+        /* Navigation */
         nav {
-            background-color: var(--card-bg);
+            background: rgba(26, 26, 26, 0.95);
             padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
+            position: fixed;
+            width: 100%;
             top: 0;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-red);
             z-index: 1000;
         }
 
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            color: var(--primary);
+            color: var(--text-light);
             text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary-red);
         }
 
         .nav-links {
@@ -67,388 +65,615 @@
         }
 
         .nav-links a {
-            color: var(--text);
+            color: var(--text-light);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text);
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 2rem;
-        }
-
-        .sidebar {
-            position: sticky;
-            top: 5rem;
-            height: fit-content;
-        }
-
-        .search-bar {
+            transition: color 0.3s ease;
             position: relative;
-            margin-bottom: 2rem;
         }
 
-        .search-bar input {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            background-color: var(--card-bg);
-            color: var(--text);
-        }
-
-        .search-bar i {
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text);
-            opacity: 0.5;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-red);
+            transition: width 0.3s ease;
         }
 
-        .category-list {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            overflow: hidden;
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
-        .category-item {
-            padding: 1rem;
-            cursor: pointer;
+        .auth-buttons {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            border-bottom: 1px solid var(--border);
-            transition: background-color 0.3s;
+            gap: 1rem;
         }
 
-        .category-item:hover {
-            background-color: var(--background);
-        }
-
-        .category-item.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .main-content {
-            display: grid;
-            gap: 2rem;
-        }
-
-        .resource-card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 1.5rem;
-            transition: transform 0.3s;
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
             cursor: pointer;
         }
 
-        .resource-card:hover {
-            transform: translateY(-2px);
+        .btn-login {
+            background-color: transparent;
+            border: 2px solid var(--primary-red);
+            color: var(--text-light);
         }
 
-        .resource-header {
+        .btn-signup {
+            background-color: var(--primary-red);
+            color: var(--text-light);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(217, 33, 33, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Resource Categories */
+        .category-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .resource-type {
-            background-color: var(--tag-bg);
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.875rem;
-        }
-
-        .tag-list {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-        }
-
-        .tag {
-            background-color: var(--tag-bg);
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.875rem;
-        }
-
-        .featured-essays {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
+            align-items: center;
             margin-bottom: 2rem;
         }
 
-        .essay-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        .category-header h1 {
+            color: var(--primary-gold);
+            font-size: 2.5rem;
+        }
+
+        .category-filters {
+            display: flex;
             gap: 1rem;
-            margin-top: 1rem;
         }
 
-        .essay-card {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 5px;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s;
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .essay-card:hover {
-            transform: translateY(-2px);
+        .filter-btn.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
         }
 
-        .expert-tips {
+        .filter-btn:hover {
+            background: rgba(217, 33, 33, 0.2);
+        }
+
+        /* Resource Grid */
+        .resource-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
             margin-top: 2rem;
         }
 
-        .tip-card {
-            background-color: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary);
+        .resource-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+            position: relative;
         }
 
-        .resource-stats {
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .resource-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #2c2c2c, #1a1a1a);
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            color: var(--text);
-            opacity: 0.7;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat {
+        .resource-image i {
+            font-size: 3rem;
+            color: var(--primary-red);
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--premium-gradient);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--primary-black);
+        }
+
+        .resource-content {
+            padding: 1.5rem;
+        }
+
+        .resource-title {
+            color: var(--primary-silver);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-description {
+            color: var(--text-light);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--primary-silver);
+        }
+
+        .shard-cost {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        footer {
-            background-color: var(--card-bg);
+        .shard-cost i {
+            color: var(--primary-gold);
+        }
+
+        .resource-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(217, 33, 33, 0.1);
+            color: var(--primary-red);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
             padding: 2rem;
+            margin-top: 3rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
             text-align: center;
-            margin-top: 4rem;
+        }
+
+        .upload-section h2 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .upload-section p {
+            color: var(--primary-silver);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--primary-black);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid var(--primary-red);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--primary-silver);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-silver);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(192, 192, 192, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
         }
 
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-
             .nav-links {
                 display: none;
             }
 
-            .sidebar {
-                position: static;
+            .category-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .category-filters {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 1rem;
+            }
+
+            .filter-btn {
+                white-space: nowrap;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav>
-        <a href="#" class="logo">Tidal Wave</a>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="essay.html">Submit Essay</a>
-            <a href="resources.html">Resources</a>
-            <a href="qanda.html">Q&A</a>
-            <a href="login.html">Login</a>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Red<span>Diamond</span></a>
+            <div class="nav-links">
+                <a href="essays.html">Essays</a>
+                <a href="ai.html">AI Review</a>
+                <a href="resources.html">Resources</a>
+                <a href="qanda.html">Q&A</a>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-login">Login</a>
+                <a href="login.html" class="btn btn-signup">Sign Up</a>
+            </div>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
-        </button>
     </nav>
 
-    <div class="container">
-        <aside class="sidebar">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search resources...">
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Category Header -->
+        <div class="category-header">
+            <h1>Writing Resources</h1>
+            <div class="category-filters">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Writing Guides</button>
+                <button class="filter-btn">Templates</button>
+                <button class="filter-btn">Examples</button>
+                <button class="filter-btn">Tips & Tricks</button>
+                <button class="filter-btn">Premium</button>
             </div>
+        </div>
 
-            <div class="category-list">
-                <div class="category-item active">
-                    <i class="fas fa-star"></i>
-                    Featured Resources
-                </div>
-                <div class="category-item">
-                    <i class="fas fa-book"></i>
-                    Sample Essays
-                </div>
-                <div class="category-item">
+        <!-- Resource Grid -->
+        <div class="resource-grid">
+            <!-- Premium Resource Card -->
+            <div class="resource-card">
+                <div class="resource-image">
                     <i class="fas fa-lightbulb"></i>
-                    Writing Tips
                 </div>
-                <div class="category-item">
-                    <i class="fas fa-graduation-cap"></i>
-                    Admissions Advice
-                </div>
-                <div class="category-item">
-                    <i class="fas fa-check-circle"></i>
-                    Grammar Guide
-                </div>
-                <div class="category-item">
-                    <i class="fas fa-chart-line"></i>
-                    Success Stories
+                <div class="resource-content">
+                    <h3 class="resource-title">Quick Writing Tips</h3>
+                    <p class="resource-description">
+                        Essential tips and tricks to instantly improve your essay writing skills.
+                    </p>
+                    <div class="resource-tags">
+                        <span class="tag">Tips & Tricks</span>
+                        <span class="tag">Quick Read</span>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="shard-cost">
+                            <i class="fas fa-gem"></i>
+                            <span>Free</span>
+                        </div>
+                        <span>5 min read</span>
+                    </div>
                 </div>
             </div>
-        </aside>
+        </div>
 
-        <main class="main-content">
-            <section class="featured-essays">
-                <h2>Featured College Essays That Worked</h2>
-                <p>Learn from successful essays that helped students get into top schools</p>
-                
-                <div class="essay-grid">
-                    <div class="essay-card">
-                        <span class="resource-type">Harvard</span>
-                        <h3>Overcoming Adversity</h3>
-                        <p>A personal narrative about resilience and growth...</p>
-                    </div>
-                    <div class="essay-card">
-                        <span class="resource-type">Stanford</span>
-                        <h3>Community Impact</h3>
-                        <p>How a local initiative sparked global change...</p>
-                    </div>
-                    <div class="essay-card">
-                        <span class="resource-type">MIT</span>
-                        <h3>Innovation Journey</h3>
-                        <p>From curiosity to breakthrough invention...</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="expert-tips">
-                <div class="tip-card">
-                    <h3>Crafting Your Personal Statement</h3>
-                    <p>Learn the essential elements of a compelling personal statement and how to make yours stand out.</p>
-                    <div class="tag-list">
-                        <span class="tag">Writing Tips</span>
-                        <span class="tag">Personal Statement</span>
-                    </div>
-                    <div class="resource-stats">
-                        <span class="stat"><i class="far fa-clock"></i> 15 min read</span>
-                        <span class="stat"><i class="far fa-eye"></i> 2.4k views</span>
-                    </div>
-                </div>
-
-                <div class="tip-card">
-                    <h3>Common Application Essay Guide</h3>
-                    <p>A comprehensive guide to tackling each prompt on the Common Application with examples.</p>
-                    <div class="tag-list">
-                        <span class="tag">Common App</span>
-                        <span class="tag">Essay Guide</span>
-                    </div>
-                    <div class="resource-stats">
-                        <span class="stat"><i class="far fa-clock"></i> 20 min read</span>
-                        <span class="stat"><i class="far fa-eye"></i> 3.1k views</span>
-                    </div>
-                </div>
-            </section>
-
-            <div class="resource-card">
-                <div class="resource-header">
-                    <h3>Writing Workshop: Show, Don't Tell</h3>
-                    <span class="resource-type">Video Tutorial</span>
-                </div>
-                <p>Master the art of descriptive writing with practical exercises and examples.</p>
-                <div class="tag-list">
-                    <span class="tag">Writing Skills</span>
-                    <span class="tag">Tutorial</span>
-                    <span class="tag">Advanced</span>
-                </div>
-                <div class="resource-stats">
-                    <span class="stat"><i class="far fa-clock"></i> 45 min</span>
-                    <span class="stat"><i class="far fa-eye"></i> 1.8k views</span>
-                    <span class="stat"><i class="far fa-star"></i> 4.9/5</span>
-                </div>
-            </div>
-
-            <div class="resource-card">
-                <div class="resource-header">
-                    <h3>Grammar & Style Guide</h3>
-                    <span class="resource-type">Quick Reference</span>
-                </div>
-                <p>Essential grammar rules, common mistakes to avoid, and style guidelines for academic writing.</p>
-                <div class="tag-list">
-                    <span class="tag">Grammar</span>
-                    <span class="tag">Style</span>
-                    <span class="tag">Reference</span>
-                </div>
-                <div class="resource-stats">
-                    <span class="stat"><i class="far fa-clock"></i> 10 min read</span>
-                    <span class="stat"><i class="far fa-eye"></i> 5.2k views</span>
-                    <span class="stat"><i class="far fa-star"></i> 4.8/5</span>
-                </div>
-            </div>
-        </main>
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h2>Share Your Knowledge</h2>
+            <p>Help others improve their writing skills by sharing your own resources</p>
+            <button class="btn btn-signup" id="upload-btn">Upload Resource</button>
+        </div>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Tidal Wave. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="#">About</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact</a>
+    <!-- Upload Modal -->
+    <div class="modal" id="upload-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Upload Resource</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="upload-form">
+                <div class="form-group">
+                    <label>Resource Title</label>
+                    <input type="text" required placeholder="Enter a descriptive title">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select required>
+                        <option value="">Select a category</option>
+                        <option value="guide">Writing Guide</option>
+                        <option value="template">Template</option>
+                        <option value="example">Example</option>
+                        <option value="tips">Tips & Tricks</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea required placeholder="Describe your resource..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>File Upload</label>
+                    <input type="file" accept=".pdf,.doc,.docx">
+                </div>
+                <div class="form-group">
+                    <label>Shard Cost (Premium Resources)</label>
+                    <input type="number" min="0" step="5" placeholder="Leave at 0 for free resources">
+                </div>
+                <button type="submit" class="btn btn-signup">Upload Resource</button>
+            </form>
         </div>
-    </footer>
+    </div>
 
     <script>
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.querySelector('.theme-toggle i');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            }
-        }
+        // DOM Elements
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const resourceGrid = document.querySelector('.resource-grid');
+        const uploadBtn = document.getElementById('upload-btn');
+        const uploadModal = document.getElementById('upload-modal');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const uploadForm = document.getElementById('upload-form');
 
-        // Add click handlers for category items
-        document.querySelectorAll('.category-item').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
+        // Sample resources data
+        let resources = [
+            {
+                id: 1,
+                title: 'Advanced Essay Structure Guide',
+                description: 'Master the art of essay writing with our comprehensive guide to advanced structure techniques.',
+                category: 'guide',
+                isPremium: true,
+                shardCost: 50,
+                tags: ['Writing Guide', 'Advanced'],
+                readTime: '20 min read'
+            },
+            // Add more resources here
+        ];
+
+        // Filter functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                const filter = button.textContent.toLowerCase();
+                filterResources(filter);
             });
         });
 
-        // Add search functionality
-        const searchInput = document.querySelector('.search-bar input');
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
+        function filterResources(filter) {
+            const cards = document.querySelectorAll('.resource-card');
+            cards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else if (filter === 'premium') {
+                    card.style.display = card.querySelector('.premium-badge') ? 'block' : 'none';
+                } else {
+                    const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+                    card.style.display = tags.some(tag => tag.includes(filter)) ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Modal functionality
+        uploadBtn.addEventListener('click', () => {
+            uploadModal.style.display = 'flex';
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            uploadModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === uploadModal) {
+                uploadModal.style.display = 'none';
+            }
+        });
+
+        // Form submission
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(uploadForm);
+            // Show loading state
+            const submitBtn = uploadForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+            try {
+                // Simulate upload delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Here you would typically send the data to your server
+                console.log('Resource uploaded:', Object.fromEntries(formData));
+
+                // Show success message
+                alert('Resource uploaded successfully!');
+                
+                // Close modal and reset form
+                uploadModal.style.display = 'none';
+                uploadForm.reset();
+
+            } catch (error) {
+                console.error('Error uploading resource:', error);
+                alert('Error uploading resource. Please try again.');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Upload Resource';
+            }
+        });
+
+        // Premium content access check
+        document.addEventListener('click', (e) => {
+            const resourceCard = e.target.closest('.resource-card');
+            if (resourceCard && resourceCard.querySelector('.premium-badge')) {
+                const shardCost = resourceCard.querySelector('.shard-cost span').textContent;
+                const currentShards = 30; // This would come from user data
+
+                if (currentShards < parseInt(shardCost)) {
+                    alert(`You need ${shardCost} shards to access this premium resource. Keep reviewing essays to earn more shards!`);
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Initialize tooltips or other UI enhancements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add any additional initialization code here
         });
     </script>
 </body>
 </html>
+                    <i class="fas fa-crown"></i>
+                    <div class="premium-badge">Premium</div>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Advanced Essay Structure Guide</h3>
+                    <p class="resource-description">
+                        Master the art of essay writing with our comprehensive guide to advanced structure techniques.
+                    </p>
+                    <div class="resource-tags">
+                        <span class="tag">Writing Guide</span>
+                        <span class="tag">Advanced</span>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="shard-cost">
+                            <i class="fas fa-gem"></i>
+                            <span>50 Shards</span>
+                        </div>
+                        <span>20 min read</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Resource Card -->
+            <div class="resource-card">
+                <div class="resource-image">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Basic Essay Templates</h3>
+                    <p class="resource-description">
+                        Get started with our collection of basic essay templates for different types of academic writing.
+                    </p>
+                    <div class="resource-tags">
+                        <span class="tag">Templates</span>
+                        <span class="tag">Beginner</span>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="shard-cost">
+                            <i class="fas fa-gem"></i>
+                            <span>Free</span>
+                        </div>
+                        <span>10 templates</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Resource Card -->
+            <div class="resource-card">
+                <div class="resource-image">
+                    <i class="fas fa-star"></i>
+                    <div class="premium-badge">Premium</div>
+                </div>
+                <div class="resource-content">
+                    <h3 class="resource-title">Professional Essay Examples</h3>
+                    <p class="resource-description">
+                        Study high-scoring essays with detailed annotations and analysis from expert writers.
+                    </p>
+                    <div class="resource-tags">
+                        <span class="tag">Examples</span>
+                        <span class="tag">Professional</span>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="shard-cost">
+                            <i class="fas fa-gem"></i>
+                            <span>75 Shards</span>
+                        </div>
+                        <span>15 examples</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Resource Card -->
+            <div class="resource-card">
+                <div class="resource

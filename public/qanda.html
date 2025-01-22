@@ -3,93 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q&A - Tidal Wave</title>
+    <title>Red Diamond - Q&A Forum</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #4A90E2;
-            --secondary: #6C63FF;
-            --success: #2ECC71;
-            --background: #ffffff;
-            --text: #333333;
-            --card-bg: #f8f9fa;
-            --border: #e1e4e8;
-            --modal-overlay: rgba(0, 0, 0, 0.5);
+            --primary-red: #D92121;
+            --primary-black: #1A1A1A;
+            --primary-silver: #C0C0C0;
+            --primary-gold: #FFD700;
+            --text-light: #FFFFFF;
+            --text-dark: #333333;
         }
 
-        [data-theme="dark"] {
-            --primary: #6C63FF;
-            --secondary: #4A90E2;
-            --success: #2ECC71;
-            --background: #1a1a1a;
-            --text: #ffffff;
-            --card-bg: #2d2d2d;
-            --border: #404040;
-            --modal-overlay: rgba(0, 0, 0, 0.7);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Previous styles remain the same... */
-        /* Adding modal styles */
+        body {
+            background-color: var(--primary-black);
+            color: var(--text-light);
+        }
 
-        .modal-overlay {
+        /* Navigation */
+        nav {
+            background: rgba(26, 26, 26, 0.95);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-red);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary-red);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-red);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            background-color: transparent;
+            border: 2px solid var(--primary-red);
+            color: var(--text-light);
+        }
+
+        .btn-signup {
+            background-color: var(--primary-red);
+            color: var(--text-light);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(217, 33, 33, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Q&A Header */
+        .qna-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .qna-header h1 {
+            color: var(--primary-gold);
+            font-size: 2.5rem;
+        }
+
+        /* Search and Filter Bar */
+        .search-filter {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-silver);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+        }
+
+        /* Question Cards */
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-red);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .question-title {
+            color: var(--primary-silver);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--primary-silver);
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .question-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(217, 33, 33, 0.1);
+            color: var(--primary-red);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Answer Section */
+        .answer-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(192, 192, 192, 0.1);
+        }
+
+        .answer-count {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .answer {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .answer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--primary-silver);
+        }
+
+        .answer-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .vote-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .vote-btn {
+            background: none;
+            border: none;
+            color: var(--primary-silver);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .vote-btn:hover {
+            color: var(--primary-red);
+        }
+
+        .vote-btn.voted {
+            color: var(--primary-red);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--modal-overlay);
-            display: none;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
         }
 
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal {
-            background-color: var(--background);
+        .modal-content {
+            background: var(--primary-black);
             padding: 2rem;
-            border-radius: 10px;
+            border-radius: 15px;
             width: 90%;
             max-width: 600px;
-            position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .modal-overlay.active .modal {
-            transform: translateY(0);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text);
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .modal-close:hover {
-            color: var(--primary);
+            border: 1px solid var(--primary-red);
         }
 
         .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
         }
 
-        .modal-header h2 {
-            color: var(--primary);
+        .modal-title {
+            color: var(--primary-gold);
             font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--primary-silver);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         .form-group {
@@ -99,439 +362,419 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--text);
+            color: var(--primary-silver);
         }
 
-        .form-control {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            background-color: var(--card-bg);
-            color: var(--text);
-            transition: border-color 0.3s;
+            padding: 0.8rem;
+            border: 1px solid rgba(192, 192, 192, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-size: 1rem;
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        textarea.form-control {
+        .form-group textarea {
             min-height: 150px;
             resize: vertical;
         }
 
-        .category-select {
+        .tag-input {
             display: flex;
-            flex-wrap: wrap;
             gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .category-option {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            background-color: var(--card-bg);
-            color: var(--text);
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .category-option.selected {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .submit-btn {
-            background-color: var(--primary);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: transform 0.3s, background-color 0.3s;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            background-color: var(--secondary);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        nav {
-            background-color: var(--card-bg);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text);
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .qa-header {
-            padding: 3rem 2rem;
-            text-align: center;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-        }
-
-        .qa-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .search-container {
-            max-width: 600px;
-            margin: -1.5rem auto 2rem;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            font-size: 1rem;
-        }
-
-        .qa-categories {
-            display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            gap: 1rem;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .category-tag {
-            padding: 0.5rem 1rem;
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .category-tag:hover {
-            background-color: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .qa-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .qa-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .qa-card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .qa-card h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .qa-card .meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            color: var(--text);
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
-
-        .ask-question {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background-color: var(--primary);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .ask-question:hover {
-            transform: translateY(-2px);
-        }
-
-        footer {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 4rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-
-        .footer-links a {
-            color: var(--text);
-            text-decoration: none;
+            padding: 0.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
             }
-            
-            .qa-grid {
-                grid-template-columns: 1fr;
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .filter-buttons {
+                justify-content: space-between;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav>
-        <a href="index.html" class="logo">Tidal Wave</a>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="essay.html">Submit Essay</a>
-            <a href="resources.html">Resources</a>
-            <a href="qanda.html" class="active">Q&A</a>
-            <a href="login.html">Login</a>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Red<span>Diamond</span></a>
+            <div class="nav-links">
+                <a href="essays.html">Essays</a>
+                <a href="ai.html">AI Review</a>
+                <a href="resources.html">Resources</a>
+                <a href="qanda.html">Q&A</a>
+            </div>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-login">Login</a>
+                <a href="login.html" class="btn btn-signup">Sign Up</a>
+            </div>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
-        </button>
     </nav>
 
-    <section class="qa-header">
-        <h1>Questions & Answers</h1>
-        <p>Get insights from admissions officers and writing experts</p>
-    </section>
-
-    <div class="search-container">
-        <input type="text" class="search-box" placeholder="Search questions...">
-    </div>
-
-    <div class="qa-categories">
-        <div class="category-tag">All Questions</div>
-        <div class="category-tag">Essay Structure</div>
-        <div class="category-tag">Common App</div>
-        <div class="category-tag">Personal Statement</div>
-        <div class="category-tag">Supplemental Essays</div>
-        <div class="category-tag">Writing Tips</div>
-    </div>
-
-    <section class="qa-section">
-        <div class="qa-grid">
-            <div class="qa-card">
-                <h3>How long should my personal statement be?</h3>
-                <p>The Common App essay should be between 250-650 words. Most successful essays are usually closer to the 650-word limit, as this gives you enough space to develop your story...</p>
-                <div class="meta">
-                    <i class="fas fa-user"></i> Answered by Sarah Miller, Admissions Officer
-                </div>
-            </div>
-
-            <div class="qa-card">
-                <h3>Should I write about COVID-19 in my essay?</h3>
-                <p>While COVID-19 has affected everyone, make sure your essay brings a unique perspective. Focus on specific experiences and personal growth rather than general impacts...</p>
-                <div class="meta">
-                    <i class="fas fa-user"></i> Answered by John Davis, Writing Coach
-                </div>
-            </div>
-
-            <div class="qa-card">
-                <h3>How do I choose a topic for my essay?</h3>
-                <p>Choose a topic that reveals something meaningful about you. The best essays often come from everyday experiences that showcase your character, values, and personal growth...</p>
-                <div class="meta">
-                    <i class="fas fa-user"></i> Answered by Emily Wong, College Counselor
-                </div>
-            </div>
-
-            <div class="qa-card">
-                <h3>What are common essay mistakes to avoid?</h3>
-                <p>Common mistakes include being too generic, trying to impress with vocabulary, not proofreading thoroughly, and failing to show rather than tell. Focus on authenticity...</p>
-                <div class="meta">
-                    <i class="fas fa-user"></i> Answered by Mark Thompson, Writing Expert
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <a href="#" class="ask-question" title="Ask a Question">
-        <i class="fas fa-plus"></i>
-    </a>
-
-    <footer>
-        <p>&copy; 2024 Tidal Wave. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="#">About</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact</a>
-        </div>
-    </footer>
-    
-    <div class="modal-overlay" id="questionModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeModal()">
-                <i class="fas fa-times"></i>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Q&A Header -->
+        <div class="qna-header">
+            <h1>Q&A Forum</h1>
+            <button class="btn btn-signup" id="ask-question-btn">
+                <i class="fas fa-plus"></i> Ask Question
             </button>
-            <div class="modal-header">
-                <h2>Ask a Question</h2>
-                <p>Our experts will answer your question within 24 hours</p>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search questions...">
             </div>
-            <form id="questionForm" onsubmit="submitQuestion(event)">
-                <div class="form-group">
-                    <label for="questionTitle">Question Title</label>
-                    <input type="text" id="questionTitle" class="form-control" required
-                        placeholder="e.g., How do I make my essay stand out?">
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <div class="category-select">
-                        <div class="category-option" onclick="toggleCategory(this)">Essay Structure</div>
-                        <div class="category-option" onclick="toggleCategory(this)">Common App</div>
-                        <div class="category-option" onclick="toggleCategory(this)">Personal Statement</div>
-                        <div class="category-option" onclick="toggleCategory(this)">Supplemental Essays</div>
-                        <div class="category-option" onclick="toggleCategory(this)">Writing Tips</div>
+            <div class="filter-buttons">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Recent</button>
+                <button class="filter-btn">Most Answered</button>
+                <button class="filter-btn">Unanswered</button>
+                <button class="filter-btn">My Questions</button>
+            </div>
+        </div>
+
+        <!-- Question List -->
+        <div class="question-list">
+            <!-- Sample Question Card -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div>
+                        <h3 class="question-title">How do I structure a comparative essay effectively?</h3>
+                        <div class="question-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-user"></i>
+                                John Doe
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                2 hours ago
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-comment"></i>
+                                5 answers
+                            </span>
+                        </div>
+                    </div>
+                    <div class="question-votes">
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <span>12</span>
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="questionDetails">Question Details</label>
-                    <textarea id="questionDetails" class="form-control" required
-                        placeholder="Provide more context about your question..."></textarea>
+                <p>I'm trying to write a comparative essay between two novels, but I'm struggling with how to organize my thoughts and arguments effectively. Any tips or templates would be helpful!</p>
+                <div class="question-tags">
+                    <span class="tag">Essay Structure</span>
+                    <span class="tag">Comparative Analysis</span>
+                    <span class="tag">Writing Tips</span>
                 </div>
-                <button type="submit" class="submit-btn">Submit Question</button>
+
+                <!-- Answer Section -->
+                <div class="answer-section">
+                    <h4 class="answer-count">5 Answers</h4>
+                    <div class="answer">
+                        <div class="answer-meta">
+                            <span>Sarah Smith • 1 hour ago</span>
+                            <div class="answer-actions">
+                                <div class="vote-buttons">
+                                    <button class="vote-btn voted">
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <span>8</span>
+                                    <button class="vote-btn">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <p>The best way to structure a comparative essay is to use either the point-by-point method or the block method. Here's a quick breakdown...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Question Cards -->
+            <div class="question-card">
+                <div class="question-header">
+                    <div>
+                        <h3 class="question-title">Tips for writing a strong thesis statement?</h3>
+                        <div class="question-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-user"></i>
+                                Alice Johnson
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                5 hours ago
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-comment"></i>
+                                3 answers
+                            </span>
+                        </div>
+                    </div>
+                    <div class="question-votes">
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <span>7</span>
+                        <button class="vote-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+                <p>I'm having trouble creating a concise and effective thesis statement. What are some key elements I should include?</p>
+                <div class="question-tags">
+                    <span class="tag">Thesis</span>
+                    <span class="tag">Academic Writing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ask Question Modal -->
+    <div class="modal" id="question-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ask a Question</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="question-form">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" required placeholder="What's your question? Be specific.">
+                </div>
+                <div class="form-group">
+                    <label>Details</label>
+                    <textarea required placeholder="Provide more context and details about your question..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tags</label>
+                    <div class="tag-input" id="tag-input">
+                        <input type="text" placeholder="Add tags (press Enter)">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-signup">Post Question</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Answer Modal -->
+    <div class="modal" id="answer-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Your Answer</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="answer-form">
+                <div class="form-group">
+                    <label>Write your answer</label>
+                    <textarea required placeholder="Share your knowledge..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-signup">Post Answer</button>
             </form>
         </div>
     </div>
 
     <script>
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.querySelector('.theme-toggle i');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
+        // DOM Elements
+        const askQuestionBtn = document.getElementById('ask-question-btn');
+        const questionModal = document.getElementById('question-modal');
+        const answerModal = document.getElementById('answer-modal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        const questionForm = document.getElementById('question-form');
+        const answerForm = document.getElementById('answer-form');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const searchInput = document.querySelector('.search-bar input');
+        const tagInput = document.getElementById('tag-input');
+
+        // Question data store
+        let questions = [
+            {
+                id: 1,
+                title: 'How do I structure a comparative essay effectively?',
+                author: 'John Doe',
+                timestamp: new Date(Date.now() - 7200000),
+                content: 'I\'m trying to write a comparative essay between two novels...',
+                votes: 12,
+                answers: 5,
+                tags: ['Essay Structure', 'Comparative Analysis', 'Writing Tips']
+            },
+            // Add more sample questions here
+        ];
+
+        // Modal Controls
+        askQuestionBtn.addEventListener('click', () => {
+            questionModal.style.display = 'flex';
+        });
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                questionModal.style.display = 'none';
+                answerModal.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === questionModal || e.target === answerModal) {
+                questionModal.style.display = 'none';
+                answerModal.style.display = 'none';
             }
-        }
-        
-         // Modal functionality
-        function openModal() {
-            document.getElementById('questionModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+        });
+
+        // Tag Input Functionality
+        let tags = [];
+
+        tagInput.querySelector('input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && this.value) {
+                e.preventDefault();
+                if (tags.length < 5) {
+                    addTag(this.value);
+                    this.value = '';
+                }
+            }
+        });
+
+        function addTag(text) {
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.innerHTML = `
+                ${text}
+                <button onclick="removeTag(this.parentElement)">&times;</button>
+            `;
+            tagInput.insertBefore(tag, tagInput.querySelector('input'));
+            tags.push(text);
         }
 
-        function closeModal() {
-            document.getElementById('questionModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
+        function removeTag(tagElement) {
+            tags = tags.filter(tag => tag !== tagElement.textContent.trim());
+            tagElement.remove();
         }
 
-        // Update the ask-question button to open modal
-        document.querySelector('.ask-question').onclick = function(e) {
+        // Form Submissions
+        questionForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            openModal();
-        };
-
-        // Close modal when clicking outside
-        document.getElementById('questionModal').onclick = function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        };
-
-        function toggleCategory(element) {
-            element.classList.toggle('selected');
-        }
-
-        function submitQuestion(event) {
-            event.preventDefault();
             
-            // Get selected categories
-            const selectedCategories = Array.from(document.querySelectorAll('.category-option.selected'))
-                .map(el => el.textContent);
-            
-            // Get form data
             const formData = {
-                title: document.getElementById('questionTitle').value,
-                categories: selectedCategories,
-                details: document.getElementById('questionDetails').value
+                title: questionForm.querySelector('input[type="text"]').value,
+                content: questionForm.querySelector('textarea').value,
+                tags: tags,
+                author: 'Current User', // This would come from auth
+                timestamp: new Date(),
+                votes: 0,
+                answers: 0
             };
-            
-            // Here you would typically send the data to your backend
-            console.log('Question submitted:', formData);
-            
-            // Close modal and reset form
-            closeModal();
-            event.target.reset();
-            
-            // Show success message (you can customize this)
-            alert('Your question has been submitted successfully! Our experts will respond within 24 hours.');
+
+            // Show loading state
+            const submitBtn = questionForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+            try {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Add to questions array (this would be a server call)
+                questions.unshift(formData);
+                
+                // Close modal and reset form
+                questionModal.style.display = 'none';
+                questionForm.reset();
+                tags = [];
+                const existingTags = tagInput.querySelectorAll('.tag');
+                existingTags.forEach(tag => tag.remove());
+
+                // Refresh question list
+                renderQuestions(questions);
+
+            } catch (error) {
+                console.error('Error posting question:', error);
+                alert('Error posting question. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Post Question';
+            }
+        });
+
+        // Voting System
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.vote-btn')) {
+                const voteBtn = e.target.closest('.vote-btn');
+                const voteDisplay = voteBtn.parentElement.querySelector('span');
+                const currentVotes = parseInt(voteDisplay.textContent);
+                
+                if (!voteBtn.classList.contains('voted')) {
+                    voteDisplay.textContent = voteBtn.querySelector('.fa-chevron-up') ? currentVotes + 1 : currentVotes - 1;
+                    voteBtn.classList.add('voted');
+                }
+            }
+        });
+
+        // Filter functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const filter = button.textContent.toLowerCase();
+                filterQuestions(filter);
+            });
+        });
+
+        function filterQuestions(filter) {
+            let filteredQuestions = [...questions];
+
+            switch (filter) {
+                case 'recent':
+                    filteredQuestions.sort((a, b) => b.timestamp - a.timestamp);
+                    break;
+                case 'most answered':
+                    filteredQuestions.sort((a, b) => b.answers - a.answers);
+                    break;
+                case 'unanswered':
+                    filteredQuestions = filteredQuestions.filter(q => q.answers === 0);
+                    break;
+                case 'my questions':
+                    filteredQuestions = filteredQuestions.filter(q => q.author === 'Current User');
+                    break;
+            }
+
+            renderQuestions(filteredQuestions);
         }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredQuestions = questions.filter(q => 
+                q.title.toLowerCase().includes(searchTerm) || 
+                q.content.toLowerCase().includes(searchTerm) ||
+                q.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+            renderQuestions(filteredQuestions);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions(questions);
+        });
     </script>
 </body>
 </html>

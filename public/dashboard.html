@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Diamond - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #D92121;
+            --primary-black: #1A1A1A;
+            --primary-silver: #C0C0C0;
+            --primary-gold: #FFD700;
+            --text-light: #FFFFFF;
+            --text-dark: #333333;
+            --success-green: #28a745;
+            --warning-yellow: #ffc107;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-black);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(26, 26, 26, 0.95);
+            border-right: 1px solid rgba(217, 33, 33, 0.2);
+            padding: 2rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary-red);
+        }
+
+        .user-profile {
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(192, 192, 192, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-red);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-light);
+        }
+
+        .user-name {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-role {
+            color: var(--primary-silver);
+            font-size: 0.9rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link i {
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(217, 33, 33, 0.1);
+            color: var(--primary-red);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text h1 {
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-text p {
+            color: var(--primary-silver);
+        }
+
+        .shard-balance {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--primary-gold);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .shard-icon {
+            font-size: 2rem;
+            color: var(--primary-gold);
+        }
+
+        .shard-info h3 {
+            color: var(--primary-gold);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-icon.essays {
+            background: rgba(217, 33, 33, 0.1);
+            color: var(--primary-red);
+        }
+
+        .stat-icon.reviews {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-gold);
+        }
+
+        .stat-icon.answers {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-green);
+        }
+
+        .stat-icon.resources {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--primary-silver);
+            font-size: 0.9rem;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .activity-details h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-time {
+            color: var(--primary-silver);
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard Sections */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .essays-section,
+        .achievements-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(192, 192, 192, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h3 {
+            color: var(--primary-gold);
+        }
+
+        /* Essay List */
+        .essay-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .essay-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .essay-item:hover {
+            transform: translateX(5px);
+        }
+
+        .essay-title {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .essay-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--primary-silver);
+            font-size: 0.9rem;
+        }
+
+        /* Achievements */
+        .achievement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .achievement-icon {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .achievement-info h4 {
+            margin-bottom: 0.3rem;
+        }
+
+        .achievement-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-red);
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="logo">Red<span>Diamond</span></a>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h3 class="user-name">Shawn Diddy Comes</h3>
+            <p class="user-role">Premium Member</p>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    My Essays
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-robot"></i>
+                    AI Review
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-lightbulb"></i>
+                    Resources
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-question-circle"></i>
+                    Q&A
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-trophy"></i>
+                    Achievements
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="welcome-text">
+                <h1>Welcome back, Shawn!</h1>
+                <p>Here's what's happening with your essays</p>
+            </div>
+            <div class="shard-balance">
+                <i class="fas fa-gem shard-icon"></i>
+                <div class="shard-info">
+                    <h3>250 Shards</h3>
+                    <p>Current Balance</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon answers">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                </div>
+                <div class="stat-value">23</div>
+                <div class="stat-label">Q&A Answers</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon resources">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                </div>
+                <div class="stat-value">8</div>
+                <div class="stat-label">Saved Resources</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Recent Essays -->
+            <div class="essays-section">
+                <div class="section-header">
+                    <h3>Recent Essays</h3>
+                    <a href="#" class="btn btn-link">View All</a>
+                </div>
+                <div class="essay-list">
+                    <div class="essay-item">
+                        <h4 class="essay-title">The Impact of Artificial Intelligence on Modern Society</h4>
+                        <div class="essay-meta">
+                            <span><i class="fas fa-clock"></i> 2 days ago</span>
+                            <span><i class="fas fa-star"></i> 4.8/5</span>
+                            <span><i class="fas fa-comment"></i> 12 reviews</span>
+                        </div>
+                    </div>
+                    <div class="essay-item">
+                        <h4 class="essay-title">Climate Change: A Global Crisis</h4>
+                        <div class="essay-meta">
+                            <span><i class="fas fa-clock"></i> 5 days ago</span>
+                            <span><i class="fas fa-star"></i> 4.5/5</span>
+                            <span><i class="fas fa-comment"></i> 8 reviews</span>
+                        </div>
+                    </div>
+                    <div class="essay-item">
+                        <h4 class="essay-title">The Evolution of Digital Privacy</h4>
+                        <div class="essay-meta">
+                            <span><i class="fas fa-clock"></i> 1 week ago</span>
+                            <span><i class="fas fa-star"></i> 4.7/5</span>
+                            <span><i class="fas fa-comment"></i> 15 reviews</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Section -->
+            <div class="achievements-section">
+                <div class="section-header">
+                    <h3>Achievements</h3>
+                    <a href="#" class="btn btn-link">View All</a>
+                </div>
+                <div class="achievement-list">
+                    <div class="achievement-item">
+                        <i class="fas fa-crown achievement-icon"></i>
+                        <div class="achievement-info">
+                            <h4>Essay Master</h4>
+                            <p>Write 50 essays</p>
+                            <div class="achievement-progress">
+                                <div class="progress-bar" style="width: 24%;"></div>
+                            </div>
+                            <small>12/50 completed</small>
+                        </div>
+                    </div>
+                    <div class="achievement-item">
+                        <i class="fas fa-star achievement-icon"></i>
+                        <div class="achievement-info">
+                            <h4>Top Reviewer</h4>
+                            <p>Give 100 reviews</p>
+                            <div class="achievement-progress">
+                                <div class="progress-bar" style="width: 45%;"></div>
+                            </div>
+                            <small>45/100 completed</small>
+                        </div>
+                    </div>
+                    <div class="achievement-item">
+                        <i class="fas fa-gem achievement-icon"></i>
+                        <div class="achievement-info">
+                            <h4>Shard Collector</h4>
+                            <p>Earn 1000 shards</p>
+                            <div class="achievement-progress">
+                                <div class="progress-bar" style="width: 25%;"></div>
+                            </div>
+                            <small>250/1000 collected</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <div class="activity-header">
+                <h3>Recent Activity</h3>
+                <a href="#" class="btn btn-link">View All</a>
+            </div>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: rgba(217, 33, 33, 0.1); color: var(--primary-red);">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4>Submitted new essay</h4>
+                        <p>The Impact of Artificial Intelligence on Modern Society</p>
+                        <span class="activity-time">2 days ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: rgba(255, 215, 0, 0.1); color: var(--primary-gold);">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4>Received essay review</h4>
+                        <p>Your essay received a 4.8/5 rating</p>
+                        <span class="activity-time">3 days ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1); color: var(--success-green);">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4>Earned 50 Shards</h4>
+                        <p>Reviewed 5 essays</p>
+                        <span class="activity-time">4 days ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector('.sidebar');
+            
+            // Add mobile menu button
+            const menuBtn = document.createElement('button');
+            menuBtn.className = 'mobile-menu-btn';
+            menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            menuBtn.style.cssText = `
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--primary-red);
+                border: none;
+                color: white;
+                padding: 0.5rem;
+                border-radius: 5px;
+                display: none;
+                cursor: pointer;
+            `;
+            
+            document.body.appendChild(menuBtn);
+            
+            // Show/hide menu button based on screen size
+            function toggleMenuButton() {
+                if (window.innerWidth <= 768) {
+                    menuBtn.style.display = 'block';
+                } else {
+                    menuBtn.style.display = 'none';
+                    sidebar.classList.remove('active');
+                }
+            }
+            
+            // Toggle sidebar
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(e.target) && 
+                    !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+            
+            // Initialize and handle window resize
+            toggleMenuButton();
+            window.addEventListener('resize', toggleMenuButton);
+        });
+    </script>
+</body>
+</html>icon essays">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Essays Written</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon reviews">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <div class="stat-value">45</div>
+                <div class="stat-label">Reviews Given</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-
